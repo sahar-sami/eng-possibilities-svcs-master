@@ -27,6 +27,7 @@ public class InvestingForecastController {
     private ObjectMapper objectMapper;
 
     @GetMapping
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<List<InvestmentDetail>> getInvestmentOptions() {
         // log.info("Received request to retrieve investment options");
         return ResponseEntity.ok(service.getInvestmentOptions());
@@ -34,6 +35,7 @@ public class InvestingForecastController {
 
     @PostMapping
     @SneakyThrows
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<ForecastResponse> getInvestmentOptions(@RequestBody final ForecastRequest request) {
         // log.info("Received request to forecast investment: {}",
         // objectMapper.writeValueAsString(request));
