@@ -26,9 +26,9 @@ public class InvestingForecastService {
         // TODO read investment options from investment-details.json
         ObjectMapper objectMapper = new ObjectMapper();
 
-        ArrayList read = (ArrayList) objectMapper.readValue(Paths.get(
-                "C:/Users/sahar/Downloads/eng-possibilities-svcs-backend/eng-possibilities-svcs-tests/src/main/resources/data/investment-details.json")
-                .toFile(), Map.class).get("Investments");
+        ArrayList read = (ArrayList) objectMapper
+                .readValue(Paths.get("src/main/resources/data/investment-details.json").toFile(), Map.class)
+                .get("Investments");
 
         String str = objectMapper.writeValueAsString(read);
         return objectMapper.readValue(str, new TypeReference<List<InvestmentDetail>>() {
