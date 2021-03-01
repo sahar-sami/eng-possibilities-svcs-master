@@ -35,14 +35,14 @@ public class InvestingForecastController {
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<List<InvestmentDetail>> getInvestmentOptions() throws IOException {
         objectMapper = new ObjectMapper();
-        // log.info("Received request to retrieve investment options");
+        log.info("Received request to retrieve investment options");
         return ResponseEntity.ok(service.getInvestmentOptions());
     }
 
     @PostMapping
     @SneakyThrows
     @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<ForecastResponse> getInvestmentOptions(ForecastRequest request) {
+    public ResponseEntity<ForecastResponse> getInvestmentOptions(@RequestBody ForecastRequest request) {
         log.info("Received request to forecast investment: {}", objectMapper.writeValueAsString(request));
         return ResponseEntity.ok(service.getInvestmentOptions(request));
     }
