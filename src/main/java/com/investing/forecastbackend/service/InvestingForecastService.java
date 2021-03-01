@@ -1,21 +1,23 @@
 package com.investing.forecastbackend.service;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import static java.util.Collections.emptyList;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.investing.forecastbackend.model.ForecastRequest;
 import com.investing.forecastbackend.model.ForecastResponse;
 import com.investing.forecastbackend.model.InvestmentDetail;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -23,15 +25,18 @@ import java.util.Map;
 public class InvestingForecastService {
 
     public List<InvestmentDetail> getInvestmentOptions() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, List<InvestmentDetail>> details = objectMapper.readValue(
+                    Paths.get("src/main/resources/data/investment-details.json").toFile(),
+                    new TypeReference<Map<String, List<InvestmentDetail>>>() {
+                    });
+            return details.get("Investments");
 
-        ArrayList read = (ArrayList) objectMapper
-                .readValue(Paths.get("src/main/resources/data/investment-details.json").toFile(), Map.class)
-                .get("Investments");
-
-        String str = objectMapper.writeValueAsString(read);
-        return objectMapper.readValue(str, new TypeReference<List<InvestmentDetail>>() {
-        });
+        } catch (Exception e) {
+            log.info("Error getting investment options:" + e.toString());
+            return emptyList();
+        }
     }
 
     public ForecastResponse getInvestmentOptions(final ForecastRequest request) throws IOException {
