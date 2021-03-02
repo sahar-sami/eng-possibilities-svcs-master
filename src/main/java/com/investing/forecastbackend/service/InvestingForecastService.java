@@ -10,6 +10,7 @@ import static java.util.Collections.emptyList;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.investing.forecastbackend.model.CombinationResponse;
 import com.investing.forecastbackend.model.ForecastRequest;
 import com.investing.forecastbackend.model.ForecastResponse;
 import com.investing.forecastbackend.model.InvestmentDetail;
@@ -69,6 +70,51 @@ public class InvestingForecastService {
             }
         }
         return new ArrayList<>(totalYearAmount.values());
+    }
+
+    public String getOptimalCategory(List<InvestmentDetail> details) {
+        Map<String, Double> categoryGrowth = new HashMap<>();
+        String category = "";
+        for (InvestmentDetail i : details) {
+            // user input for category i
+            double userInvestmentPercentage = 1000; // set it to something arbitrary
+            double userInvestmentDollars = (userInvestmentPercentage / 100) * 10000;
+            for (int x = 0; x < 10; x++) {
+
+                // historical interest data for category i in year x
+                double historicalInterest = Double.valueOf(i.getData().get(x));
+                double currentInterest = (historicalInterest / 100) * userInvestmentDollars;
+
+                // add accumulated interest for every year
+                userInvestmentDollars = userInvestmentDollars + currentInterest;
+            }
+            categoryGrowth.put(i.getCategory(), userInvestmentDollars);
+            if (category.isEmpty() || userInvestmentDollars > categoryGrowth.get(category)) {
+                category = i.getCategory();
+            }
+
+        }
+        return category;
+    }
+
+    public CombinationResponse optimalGrowth() throws IOException {
+        List<InvestmentDetail> details = getInvestmentOptions();
+        Map<String, Double> optimalAllocations = new HashMap<>();
+        String bestCategory = getOptimalCategory(details);
+        double sum = 0;
+        for (InvestmentDetail i : details) {
+            double min = Double.parseDouble(i.getMinimum());
+            optimalAllocations.put(i.getCategory(), min);
+            sum += min;
+        }
+        // after we definitely have the minimum for each category, use the best category
+        // to figure out what should get the highest investment
+        optimalAllocations.put(bestCategory, 100 - sum + optimalAllocations.get(bestCategory));
+
+        CombinationResponse toReturn = new CombinationResponse();
+        toReturn.setAllocations(optimalAllocations);
+        toReturn.setGrowth(getForeCast(optimalAllocations, details));
+        return toReturn;
     }
 
 }
