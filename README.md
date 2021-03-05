@@ -2,6 +2,10 @@
 
 #### Welcome to Deep Pockets (DePo), your Investing Forecasting service!
 
+Spring Boot application template provided by the Engineering Possibilities Summit. 
+Implementation of service completed by Sahar Sami and Chloe Goh. 
+Frontend application: https://github.com/sahar-sami/eng-possibilities-ui-master
+
 ###### The service is a Spring boot application ready with the basic fixtures to run your APIs locally. Here are some resources to get you started with Java Spring:
 - https://spring.io/guides/gs/spring-boot/
 - https://www.baeldung.com/spring-boot
